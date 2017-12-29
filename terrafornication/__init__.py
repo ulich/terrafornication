@@ -9,20 +9,24 @@ class Terrafornication:
         self.resources = {}
         self.data_sources = {}
     
+
     def provider(self, type, properties):
         p = Provider(type, properties, self.resources, self.data_sources)
         self.providers.append(p)
         return p
 
-    def to_provider_dict(self):
-        return map(lambda p: { p.type: p.properties }, self.providers)
 
     def to_dict(self):
         return {
-            "provider": self.to_provider_dict(),
+            "provider": self._to_provider_dict(),
             "data": self.data_sources,
             "resource": self.resources
         }
 
+
     def to_json(self):
         return json.dumps(self.to_dict(), indent=4)
+
+
+    def _to_provider_dict(self):
+        return map(lambda p: { p.type: p.properties }, self.providers)
