@@ -24,9 +24,17 @@ from terrafornication import Terrafornication
 
 tf = Terrafornication()
 aws = tf.provider("aws", { "region": "us-east-1" })
-aws.resource("instance", "app1", {
-    "ami": "ami-aa2ea6d0",
-    "instance_type": "t2.micro"
+
+primary_zone = aws.resource("route53_zone", "primary", {
+    "name": "example.com"
+})
+
+aws.resource("route53_record", "dev", {
+    "zone_id": primary_zone.ref("zone_id"),
+    "name": "dev",
+    "type": "A",
+    "ttl": "60",
+    "records": ["1.2.3.4"]
 })
 
 print tf.to_json()
@@ -36,13 +44,22 @@ This writes the following json to stdout:
 ```json
 {
     "resource": {
-        "aws_instance": {
-            "app1": {
-                "ami": "ami-aa2ea6d0",
-                "instance_type": "t2.micro"
+        "aws_route53_zone": {
+            "primary": {
+                "name": "example.com"
+            }
+        },
+        "aws_route53_record": {
+            "dev": {
+                "records": ["1.2.3.4"],
+                "ttl": "60",
+                "type": "A",
+                "zone_id": "${aws_route53_zone.primary.zone_id}",
+                "name": "dev"
             }
         }
     },
+    "data": {},
     "provider": [
         {
             "aws": {
