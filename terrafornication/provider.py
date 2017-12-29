@@ -41,10 +41,6 @@ class Provider:
         return data_source
 
 
-    def resource_dict(self):
-        return self.resources
-
-
     def _full_type(self, type):
         return self.type + "_" + type
 
