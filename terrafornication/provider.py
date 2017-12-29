@@ -1,12 +1,14 @@
 class Provider:
     
-    def __init__(self, type, properties, resources):
+    def __init__(self, type, properties, resources, data_sources):
         self.type = type
         self.properties = properties
         self.resources = resources
+        self.data_sources = data_sources
+    
     
     def resource(self, type, name, properties):
-        full_type = self.type + "_" + type
+        full_type = self._full_type(type)
         self.resources[full_type] = self.resources.get(full_type, {})
 
         if name in self.resources[full_type]:
@@ -19,8 +21,24 @@ class Provider:
         self.resources[full_type][name] = properties
         return Resource(full_type, name, properties)
 
+
+    def data(self, type, name, properties):
+        full_type = self._full_type(type)
+        self.data_sources[full_type] = self.data_sources.get(full_type, {})
+
+        if name in self.data_sources[full_type]:
+            raise DuplicateDataSourceException
+        
+        self.data_sources[full_type][name] = properties
+        return DataSource(full_type, name, properties)
+
+
     def resource_dict(self):
         return self.resources
+
+
+    def _full_type(self, type):
+        return self.type + "_" + type
 
 
 class Resource:
@@ -34,5 +52,20 @@ class Resource:
         return "${{{}.{}.{}}}".format(self.type, self.name, property)
 
 
+class DataSource:
+    
+    def __init__(self, type, name, properties):
+        self.type = type
+        self.name = name
+        self.properties = properties
+
+    def ref(self, property):
+        return "${{data.{}.{}.{}}}".format(self.type, self.name, property)
+
+
 class DuplicateResourceException(RuntimeError):
+    pass
+
+
+class DuplicateDataSourceException(RuntimeError):
     pass

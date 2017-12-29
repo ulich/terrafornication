@@ -7,9 +7,10 @@ class Terrafornication:
     def __init__(self):
         self.providers = []
         self.resources = {}
+        self.data_sources = {}
     
     def provider(self, type, properties):
-        p = Provider(type, properties, self.resources)
+        p = Provider(type, properties, self.resources, self.data_sources)
         self.providers.append(p)
         return p
 
@@ -19,8 +20,9 @@ class Terrafornication:
     def to_dict(self):
         return {
             "provider": self.to_provider_dict(),
+            "data": self.data_sources,
             "resource": self.resources
         }
 
     def to_json(self):
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict(), indent=4)

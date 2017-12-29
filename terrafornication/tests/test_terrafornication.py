@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import terrafornication
-from terrafornication.provider import DuplicateResourceException
+from terrafornication.provider import DuplicateResourceException, DuplicateDataSourceException
 
 class TestTerrafornication(TestCase):
     
@@ -23,6 +23,7 @@ class TestTerrafornication(TestCase):
                     "alias": "provider2"
                 }
             }],
+            "data": {},
             "resource": {
                 "aws_instance": {
                     "app1": {},
@@ -53,6 +54,7 @@ class TestTerrafornication(TestCase):
             "provider": [{
                 "aws": {}
             }],
+            "data": {},
             "resource": {
                 "aws_instance": {
                     "app1": {},
@@ -64,3 +66,43 @@ class TestTerrafornication(TestCase):
                 }
             }
         })
+
+
+    def test_data_sources(self):
+        aws = self.tf.provider("aws", {})
+        instance = aws.data('instance', 'app1', { "filter": [{ "name": "image-id", "values": ["ami-xxxxxxx"] }] })
+        aws.resource('route53_record', instance.name + '_dns', {
+            "records": [instance.ref('public_ip')]
+        })
+
+        self.assertEqual(self.tf.to_dict(), {
+            "provider": [{
+                "aws": {}
+            }],
+            "data": {
+                "aws_instance": {
+                    "app1": {
+                        "filter": [{
+                            "name": "image-id",
+                            "values": ["ami-xxxxxxx"]
+                        }]
+                    }
+                }
+            },
+            "resource": {
+                "aws_route53_record": {
+                    "app1_dns": {
+                        "records": ["${data.aws_instance.app1.public_ip}"]
+                    }
+                }
+            }
+        })
+        
+
+
+    def test_duplicate_data_sources(self):
+        aws = self.tf.provider("aws", {})
+        aws.data('instance', 'app1', {})
+
+        with self.assertRaises(DuplicateDataSourceException):
+            aws.data('instance', 'app1', {})
