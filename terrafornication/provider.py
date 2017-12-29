@@ -32,9 +32,13 @@ class Provider:
 
         if name in self.data_sources[full_type]:
             raise DuplicateDataSourceException
-        
+
+        data_source = DataSource(full_type, name)
+        if callable(properties):
+            properties = properties(data_source)
+
         self.data_sources[full_type][name] = properties
-        return DataSource(full_type, name)
+        return data_source
 
 
     def resource_dict(self):

@@ -120,6 +120,25 @@ class TestTerrafornication(TestCase):
         })
 
 
+    def test_data_source_name_reuse_in_properties(self):
+        aws = self.tf.provider("aws", {})
+        aws.data('instance', 'app1', lambda data_source: { "name": data_source.name })
+
+        self.assertEqual(self.tf.to_dict(), {
+            "provider": [{
+                "aws": {}
+            }],
+            "data": {
+                "aws_instance": {
+                    "app1": {
+                        "name": "app1"
+                    }
+                }
+            },
+            "resource": {}
+        })
+
+
     def test_duplicate_data_sources(self):
         aws = self.tf.provider("aws", {})
         aws.data('instance', 'app1', {})
