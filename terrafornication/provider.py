@@ -14,12 +14,16 @@ class Provider:
         if name in self.resources[full_type]:
             raise DuplicateResourceException("The resource {}.{} already exists".format(full_type, name))
 
+        resource = Resource(full_type, name)
+        if callable(properties):
+            properties = properties(resource)
+
         if "alias" in self.properties:
             properties = properties.copy()
             properties["provider"] = self.type + "." + self.properties["alias"]
 
         self.resources[full_type][name] = properties
-        return Resource(full_type, name, properties)
+        return resource
 
 
     def data(self, type, name, properties):
@@ -30,7 +34,7 @@ class Provider:
             raise DuplicateDataSourceException
         
         self.data_sources[full_type][name] = properties
-        return DataSource(full_type, name, properties)
+        return DataSource(full_type, name)
 
 
     def resource_dict(self):
@@ -43,10 +47,9 @@ class Provider:
 
 class Resource:
     
-    def __init__(self, type, name, properties):
+    def __init__(self, type, name):
         self.type = type
         self.name = name
-        self.properties = properties
 
     def ref(self, property):
         return "${{{}.{}.{}}}".format(self.type, self.name, property)
@@ -54,10 +57,9 @@ class Resource:
 
 class DataSource:
     
-    def __init__(self, type, name, properties):
+    def __init__(self, type, name):
         self.type = type
         self.name = name
-        self.properties = properties
 
     def ref(self, property):
         return "${{data.{}.{}.{}}}".format(self.type, self.name, property)

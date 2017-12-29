@@ -66,6 +66,27 @@ class TestTerrafornication(TestCase):
                 }
             }
         })
+    
+
+    def test_resource_name_reuse_in_properties(self):
+        aws = self.tf.provider("aws", {})
+        aws.resource('route53_record', 'dns', lambda resource: {
+            "name": resource.name
+        })
+
+        self.assertEqual(self.tf.to_dict(), {
+            "provider": [{
+                "aws": {}
+            }],
+            "data": {},
+            "resource": {
+                "aws_route53_record": {
+                    "dns": {
+                        "name": "dns"
+                    }
+                }
+            }
+        })
 
 
     def test_data_sources(self):
@@ -97,7 +118,6 @@ class TestTerrafornication(TestCase):
                 }
             }
         })
-        
 
 
     def test_duplicate_data_sources(self):
