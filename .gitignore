@@ -5,6 +5,7 @@
 # Terraform
 /.terraform
 /terraform.tfstate
+/terraform.tfstate.backup
 *.tf.json
 ˙
 # Visual Studio Code
