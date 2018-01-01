@@ -1,4 +1,4 @@
-# terrafornication
+# terrafornication &middot; [![Build Status](https://travis-ci.org/ulich/terrafornication.svg?branch=master)](https://travis-ci.org/ulich/terrafornication)
 
 Describe your infrastructure with terraform as python code.
 
