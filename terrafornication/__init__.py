@@ -1,6 +1,7 @@
+from __future__ import absolute_import
 import json
 import collections
-from provider import Provider
+from . import provider
 
 class Terrafornication:
 
@@ -21,7 +22,7 @@ class Terrafornication:
     
 
     def provider(self, type, properties):
-        p = Provider(type, properties, self.resources, self.data_sources)
+        p = provider.Provider(type, properties, self.resources, self.data_sources)
         self.providers.append(p)
         return p
 
@@ -48,7 +49,7 @@ class Terrafornication:
 
 
     def _to_provider_dict(self):
-        return map(lambda p: { p.type: p.properties }, self.providers)
+        return list(map(lambda p: { p.type: p.properties }, self.providers))
 
 
 class Variable:

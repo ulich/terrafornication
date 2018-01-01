@@ -1,5 +1,6 @@
 # Python
 /env/
+/env3/
 *.pyc
 
 # Terraform
