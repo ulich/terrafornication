@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import terrafornication
-from terrafornication import DuplicateVariableException
+from terrafornication import DuplicateVariableException, DuplicateOutputException
 from terrafornication.provider import DuplicateResourceException, DuplicateDataSourceException
 
 class TestTerrafornication(TestCase):
@@ -36,7 +36,8 @@ class TestTerrafornication(TestCase):
                         "ami": "${var.foo}"
                     }
                 }
-            }
+            },
+            "output": {}
         })
     
 
@@ -71,7 +72,8 @@ class TestTerrafornication(TestCase):
                         "provider": "aws.provider2"
                     }
                 }
-            }
+            },
+            "output": {}
         })
 
 
@@ -105,7 +107,8 @@ class TestTerrafornication(TestCase):
                         "records": ["${aws_instance.app1.public_ip}"]
                     }
                 }
-            }
+            },
+            "output": {}
         })
     
 
@@ -127,7 +130,8 @@ class TestTerrafornication(TestCase):
                         "name": "dns"
                     }
                 }
-            }
+            },
+            "output": {}
         })
 
 
@@ -159,7 +163,8 @@ class TestTerrafornication(TestCase):
                         "records": ["${data.aws_instance.app1.public_ip}"]
                     }
                 }
-            }
+            },
+            "output": {}
         })
 
 
@@ -179,7 +184,8 @@ class TestTerrafornication(TestCase):
                     }
                 }
             },
-            "resource": {}
+            "resource": {},
+            "output": {}
         })
 
 
@@ -189,3 +195,37 @@ class TestTerrafornication(TestCase):
 
         with self.assertRaises(DuplicateDataSourceException):
             aws.data('instance', 'app1', {})
+
+
+    def test_output(self):
+        aws = self.tf.provider("aws", {})
+        elastic_ip = aws.resource('eip', 'elastic_ip', {})
+
+        foo = self.tf.output("ip", {
+            "value": elastic_ip.ref("public_ip")
+        })
+
+        self.assertEqual(self.tf.to_dict(), {
+            "variable": {},
+            "provider": [{
+                "aws": {}
+            }],
+            "data": {},
+            "resource": {
+                "aws_eip": {
+                    "elastic_ip": {}
+                }
+            },
+            "output": {
+                "ip": {
+                    "value": "${aws_eip.elastic_ip.public_ip}"
+                }
+            }
+        })
+    
+
+    def test_duplicate_output(self):
+        self.tf.output('foo', {})
+
+        with self.assertRaises(DuplicateOutputException):
+            self.tf.output('foo', {})

@@ -9,6 +9,7 @@ class Terrafornication:
         self.providers = []
         self.resources = {}
         self.data_sources = {}
+        self.outputs = {}
 
 
     def variable(self, name, properties):
@@ -24,13 +25,21 @@ class Terrafornication:
         self.providers.append(p)
         return p
 
+    
+    def output(self, name, properties):
+        if name in self.outputs:
+            raise DuplicateOutputException("The output {} already exists".format(name))
+
+        self.outputs[name] = properties
+
 
     def to_dict(self):
         return {
             "variable": self.variables,
             "provider": self._to_provider_dict(),
             "data": self.data_sources,
-            "resource": self.resources
+            "resource": self.resources,
+            "output": self.outputs
         }
 
 
@@ -52,4 +61,8 @@ class Variable:
 
 
 class DuplicateVariableException(RuntimeError):
+    pass
+
+
+class DuplicateOutputException(RuntimeError):
     pass
