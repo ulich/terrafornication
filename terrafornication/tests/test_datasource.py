@@ -17,7 +17,6 @@ class TestTerrafornication(TestCase):
         })
 
         self.assertEqual(self.tf.to_dict(), {
-            "variable": {},
             "provider": [{
                 "aws": {}
             }],
@@ -37,8 +36,7 @@ class TestTerrafornication(TestCase):
                         "records": ["${data.aws_instance.app1.public_ip}"]
                     }
                 }
-            },
-            "output": {}
+            }
         })
 
 
@@ -47,7 +45,6 @@ class TestTerrafornication(TestCase):
         aws.data('instance', 'app1', lambda data_source: { "name": data_source.name })
 
         self.assertEqual(self.tf.to_dict(), {
-            "variable": {},
             "provider": [{
                 "aws": {}
             }],
@@ -57,9 +54,7 @@ class TestTerrafornication(TestCase):
                         "name": "app1"
                     }
                 }
-            },
-            "resource": {},
-            "output": {}
+            }
         })
 
 

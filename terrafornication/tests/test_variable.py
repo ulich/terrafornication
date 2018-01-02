@@ -28,15 +28,13 @@ class TestVariable(TestCase):
             "provider": [{
                 "aws": {}
             }],
-            "data": {},
             "resource": {
                 "aws_instance": {
                     "app": {
                         "ami": "${var.foo}"
                     }
                 }
-            },
-            "output": {}
+            }
         })
     
 

@@ -59,7 +59,6 @@ This writes the following json to stdout:
             }
         }
     },
-    "data": {},
     "provider": [
         {
             "aws": {

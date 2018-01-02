@@ -35,13 +35,21 @@ class Terrafornication:
 
 
     def to_dict(self):
-        return {
-            "variable": self.variables,
-            "provider": self._to_provider_dict(),
-            "data": self.data_sources,
-            "resource": self.resources,
-            "output": self.outputs
-        }
+        result = {}
+
+        providers = self._to_provider_dict()
+        if providers:
+            result["provider"] = providers
+        if self.variables:
+            result["variable"] = self.variables
+        if self.data_sources:
+            result["data"] = self.data_sources
+        if self.resources:
+            result["resource"] = self.resources
+        if self.outputs:
+            result["output"] = self.outputs
+
+        return result
 
 
     def to_json(self):

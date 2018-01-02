@@ -8,6 +8,10 @@ class TestProvider(TestCase):
         self.tf = terrafornication.Terrafornication()
     
 
+    def test_no_provider(self):
+        self.assertEqual(self.tf.to_dict(), {})
+
+
     def test_multiple_providers_with_aliases(self):
         aws = self.tf.provider("aws", {})
         aws2 = self.tf.provider("aws", { "alias": "provider2" })
@@ -16,7 +20,6 @@ class TestProvider(TestCase):
         aws2.resource('instance', 'app2', {})
 
         self.assertEqual(self.tf.to_dict(), {
-            "variable": {},
             "provider": [{
                 "aws": {}
             }, {
@@ -24,7 +27,6 @@ class TestProvider(TestCase):
                     "alias": "provider2"
                 }
             }],
-            "data": {},
             "resource": {
                 "aws_instance": {
                     "app1": {},
@@ -32,6 +34,5 @@ class TestProvider(TestCase):
                         "provider": "aws.provider2"
                     }
                 }
-            },
-            "output": {}
+            }
         })

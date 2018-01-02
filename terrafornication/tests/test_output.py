@@ -18,11 +18,9 @@ class TestTerrafornication(TestCase):
         })
 
         self.assertEqual(self.tf.to_dict(), {
-            "variable": {},
             "provider": [{
                 "aws": {}
             }],
-            "data": {},
             "resource": {
                 "aws_eip": {
                     "elastic_ip": {}
