@@ -2,6 +2,7 @@
 /env/
 /env3/
 *.pyc
+/*.egg-info/
 
 # Test coverage
 .coverage
