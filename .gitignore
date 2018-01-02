@@ -3,6 +3,10 @@
 /env3/
 *.pyc
 
+# Test coverage
+.coverage
+/cover/
+
 # Terraform
 /.terraform
 /terraform.tfstate

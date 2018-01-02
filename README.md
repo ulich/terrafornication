@@ -1,4 +1,4 @@
-# terrafornication &middot; [![Build Status](https://travis-ci.org/ulich/terrafornication.svg?branch=master)](https://travis-ci.org/ulich/terrafornication)
+# terrafornication &middot; [![Build Status](https://travis-ci.org/ulich/terrafornication.svg?branch=master)](https://travis-ci.org/ulich/terrafornication) [![codecov](https://codecov.io/gh/ulich/terrafornication/branch/master/graph/badge.svg)](https://codecov.io/gh/ulich/terrafornication)
 
 Describe your infrastructure with terraform as python code (tested with python 2.6, 2.7, 3.3, 3.4, 3.5, 3.6).
 
