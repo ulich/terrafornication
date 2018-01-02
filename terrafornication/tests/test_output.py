@@ -39,5 +39,4 @@ class TestTerrafornication(TestCase):
     def test_duplicate_output(self):
         self.tf.output('foo', {})
 
-        with self.assertRaises(DuplicateOutputException):
-            self.tf.output('foo', {})
+        self.assertRaises(DuplicateOutputException, lambda: self.tf.output('foo', {}))

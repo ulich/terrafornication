@@ -1,6 +1,6 @@
 # terrafornication &middot; [![Build Status](https://travis-ci.org/ulich/terrafornication.svg?branch=master)](https://travis-ci.org/ulich/terrafornication)
 
-Describe your infrastructure with terraform as python code.
+Describe your infrastructure with terraform as python code (tested with python 2.6, 2.7, 3.3, 3.4, 3.5, 3.6).
 
 
 ## Why?

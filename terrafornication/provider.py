@@ -12,7 +12,7 @@ class Provider:
         self.resources[full_type] = self.resources.get(full_type, {})
 
         if name in self.resources[full_type]:
-            raise DuplicateResourceException("The resource {}.{} already exists".format(full_type, name))
+            raise DuplicateResourceException("The resource {0}.{1} already exists".format(full_type, name))
 
         resource = Resource(full_type, name)
         if callable(properties):
@@ -52,7 +52,7 @@ class Resource:
         self.name = name
 
     def ref(self, property):
-        return "${{{}.{}.{}}}".format(self.type, self.name, property)
+        return "${{{0}.{1}.{2}}}".format(self.type, self.name, property)
 
 
 class DataSource:
@@ -62,7 +62,7 @@ class DataSource:
         self.name = name
 
     def ref(self, property):
-        return "${{data.{}.{}.{}}}".format(self.type, self.name, property)
+        return "${{data.{0}.{1}.{2}}}".format(self.type, self.name, property)
 
 
 class DuplicateResourceException(RuntimeError):

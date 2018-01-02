@@ -13,8 +13,7 @@ class TestTerrafornication(TestCase):
         aws = self.tf.provider("aws", {})
         aws.resource('instance', 'app1', {"foo": "bar"})
 
-        with self.assertRaises(DuplicateResourceException):
-            aws.resource('instance', 'app1', {"foo": "baz"})
+        self.assertRaises(DuplicateResourceException, lambda: aws.resource('instance', 'app1', {"foo": "baz"}))
 
 
     def test_resource_references(self):

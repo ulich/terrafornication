@@ -43,5 +43,4 @@ class TestVariable(TestCase):
     def test_duplicate_variable(self):
         self.tf.variable('foo', {})
 
-        with self.assertRaises(DuplicateVariableException):
-            self.tf.variable('foo', {})
+        self.assertRaises(DuplicateVariableException, lambda: self.tf.variable('foo', {}))

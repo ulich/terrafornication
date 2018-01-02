@@ -67,5 +67,4 @@ class TestTerrafornication(TestCase):
         aws = self.tf.provider("aws", {})
         aws.data('instance', 'app1', {})
 
-        with self.assertRaises(DuplicateDataSourceException):
-            aws.data('instance', 'app1', {})
+        self.assertRaises(DuplicateDataSourceException, lambda: aws.data('instance', 'app1', {}))

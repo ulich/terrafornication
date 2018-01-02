@@ -15,7 +15,7 @@ class Terrafornication:
 
     def variable(self, name, properties):
         if name in self.variables:
-            raise DuplicateVariableException("The variable {} already exists".format(name))
+            raise DuplicateVariableException("The variable {0} already exists".format(name))
 
         self.variables[name] = properties
         return Variable(name)
@@ -29,7 +29,7 @@ class Terrafornication:
     
     def output(self, name, properties):
         if name in self.outputs:
-            raise DuplicateOutputException("The output {} already exists".format(name))
+            raise DuplicateOutputException("The output {0} already exists".format(name))
 
         self.outputs[name] = properties
 
@@ -58,7 +58,7 @@ class Variable:
         self.name = name
 
     def ref(self):
-        return "${{var.{}}}".format(self.name)
+        return "${{var.{0}}}".format(self.name)
 
 
 class DuplicateVariableException(RuntimeError):
