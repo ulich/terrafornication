@@ -22,9 +22,37 @@ class Terrafornication:
     
 
     def provider(self, type, properties):
-        p = provider.Provider(type, properties, self.resources, self.data_sources)
+        p = provider.Provider(type, properties, self)
         self.providers.append(p)
         return p
+
+
+    def resource(self, type, name, properties):
+        self.resources[type] = self.resources.get(type, {})
+
+        if name in self.resources[type]:
+            raise DuplicateResourceException("The resource {0}.{1} already exists".format(type, name))
+
+        resource = Resource(type, name)
+        if callable(properties):
+            properties = properties(resource)
+
+        self.resources[type][name] = properties
+        return resource
+
+
+    def data(self, type, name, properties):
+        self.data_sources[type] = self.data_sources.get(type, {})
+
+        if name in self.data_sources[type]:
+            raise DuplicateDataSourceException
+
+        data_source = DataSource(type, name)
+        if callable(properties):
+            properties = properties(data_source)
+
+        self.data_sources[type][name] = properties
+        return data_source
 
     
     def output(self, name, properties):
@@ -69,9 +97,34 @@ class Variable:
         return "${{var.{0}}}".format(self.name)
 
 
+class Resource:
+    
+    def __init__(self, type, name):
+        self.type = type
+        self.name = name
+
+    def ref(self, property):
+        return "${{{0}.{1}.{2}}}".format(self.type, self.name, property)
+
+
+class DataSource:
+    
+    def __init__(self, type, name):
+        self.type = type
+        self.name = name
+
+    def ref(self, property):
+        return "${{data.{0}.{1}.{2}}}".format(self.type, self.name, property)
+
+
 class DuplicateVariableException(RuntimeError):
     pass
 
+class DuplicateResourceException(RuntimeError):
+    pass
+
+class DuplicateDataSourceException(RuntimeError):
+    pass
 
 class DuplicateOutputException(RuntimeError):
     pass

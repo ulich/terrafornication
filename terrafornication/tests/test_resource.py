@@ -1,32 +1,26 @@
 from unittest import TestCase
 
-import terrafornication
-from terrafornication.provider import DuplicateResourceException
+from terrafornication import Terrafornication, DuplicateResourceException
 
 class TestTerrafornication(TestCase):
     
     def setUp(self):
-        self.tf = terrafornication.Terrafornication()
+        self.tf = Terrafornication()
 
 
     def test_duplicate_resources(self):
-        aws = self.tf.provider("aws", {})
-        aws.resource('instance', 'app1', {"foo": "bar"})
+        self.tf.resource('aws_instance', 'app1', {"foo": "bar"})
 
-        self.assertRaises(DuplicateResourceException, lambda: aws.resource('instance', 'app1', {"foo": "baz"}))
+        self.assertRaises(DuplicateResourceException, lambda: self.tf.resource('aws_instance', 'app1', {}))
 
 
     def test_resource_references(self):
-        aws = self.tf.provider("aws", {})
-        instance = aws.resource('instance', 'app1', {})
-        aws.resource('route53_record', instance.name + '_dns', {
+        instance = self.tf.resource('aws_instance', 'app1', {})
+        self.tf.resource('aws_route53_record', instance.name + '_dns', {
             "records": [instance.ref('public_ip')]
         })
 
         self.assertEqual(self.tf.to_dict(), {
-            "provider": [{
-                "aws": {}
-            }],
             "resource": {
                 "aws_instance": {
                     "app1": {},
@@ -41,15 +35,11 @@ class TestTerrafornication(TestCase):
     
 
     def test_resource_name_reuse_in_properties(self):
-        aws = self.tf.provider("aws", {})
-        aws.resource('route53_record', 'dns', lambda resource: {
+        self.tf.resource('aws_route53_record', 'dns', lambda resource: {
             "name": resource.name
         })
 
         self.assertEqual(self.tf.to_dict(), {
-            "provider": [{
-                "aws": {}
-            }],
             "resource": {
                 "aws_route53_record": {
                     "dns": {

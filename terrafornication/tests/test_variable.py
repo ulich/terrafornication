@@ -1,12 +1,11 @@
 from unittest import TestCase
 
-import terrafornication
-from terrafornication import DuplicateVariableException, DuplicateOutputException
+from terrafornication import Terrafornication, DuplicateVariableException, DuplicateOutputException
 
 class TestVariable(TestCase):
     
     def setUp(self):
-        self.tf = terrafornication.Terrafornication()
+        self.tf = Terrafornication()
     
 
     def test_variable(self):
@@ -14,8 +13,7 @@ class TestVariable(TestCase):
             "default": "bar"
         })
 
-        aws = self.tf.provider("aws", {})
-        aws.resource('instance', 'app', {
+        self.tf.resource('aws_instance', 'app', {
             "ami": foo.ref()
         })
 
@@ -25,9 +23,6 @@ class TestVariable(TestCase):
                     "default": "bar"
                 }
             },
-            "provider": [{
-                "aws": {}
-            }],
             "resource": {
                 "aws_instance": {
                     "app": {

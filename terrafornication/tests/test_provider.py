@@ -1,15 +1,47 @@
 from unittest import TestCase
 
-import terrafornication
+from terrafornication import Terrafornication
 
 class TestProvider(TestCase):
     
     def setUp(self):
-        self.tf = terrafornication.Terrafornication()
+        self.tf = Terrafornication()
     
 
     def test_no_provider(self):
         self.assertEqual(self.tf.to_dict(), {})
+
+    
+    def test_provider_resource(self):
+        aws = self.tf.provider("aws", {})
+        aws.resource('instance', 'app1', {})
+
+        self.assertEqual(self.tf.to_dict(), {
+            "provider": [{
+                "aws": {}
+            }],
+            "resource": {
+                "aws_instance": {
+                    "app1": {}
+                }
+            }
+        })
+    
+
+    def test_provider_data_source(self):
+        aws = self.tf.provider("aws", {})
+        aws.data('instance', 'app1', {})
+
+        self.assertEqual(self.tf.to_dict(), {
+            "provider": [{
+                "aws": {}
+            }],
+            "data": {
+                "aws_instance": {
+                    "app1": {}
+                }
+            }
+        })
 
 
     def test_multiple_providers_with_aliases(self):

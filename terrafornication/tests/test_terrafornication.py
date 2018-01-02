@@ -1,12 +1,12 @@
 
 from unittest import TestCase
 
-import terrafornication
+from terrafornication import Terrafornication
 
 class TestTerrafornication(TestCase):
     
     def test_to_json(self):
-        tf = terrafornication.Terrafornication()
+        tf = Terrafornication()
         tf.variable('foo', {})
         json = tf.to_json()
 
